@@ -1,0 +1,11 @@
+name: vertebrae
+author: Maui Dev <mauidev@ascentis.com>
+version: 0.1.7
+homepage: http://mauigit.ascentis.com:8080/packages/ascentis_mvc
+description: Evolving front-end MVC framework.
+dependencies:
+  browser: any
+  logging: any
+  mustache: any
+dev_dependencies:
+  unittest: any
