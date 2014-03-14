@@ -10,13 +10,16 @@ abstract class Controller {
   StreamController modelStream;
   Stream get onModelLoaded => modelStream.stream;
   Logger logger;
-  Map model;
+  Map _model;
+  get model => _model;
+  set model(Map value) => _model = value;
   Map properties;
   
   Controller() {
     modelStream = new StreamController.broadcast();
   }
+  
   void init({Map properties, var socket});
   void loadView();
-  void destroy();
+  void destroy(String templateContainerId);
 }

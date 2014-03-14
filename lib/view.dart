@@ -24,13 +24,20 @@ abstract class View {
   void decorateModel() {
   }
   
-  void render() {
+  void render(String parentId) {
     // Locate proper parent element for view.
-    Element parent = querySelector('#templateContainer');
+    Element parent = querySelector("#" + parentId);
+    if(parent == null){
+      return;
+    }
     
     // Bind model to template, load style, and append output to parent element.
     templateRenderer.renderTemplate(this.model, this.templatePath)
       .whenComplete(() {
+        if(templateRenderer == null){
+          return;
+        }
+        // parent.appendHtml(templateRenderer.output);
         parent.appendHtml(templateRenderer.output);
         postRender();
         viewStream.add(templateRenderer.output);
@@ -40,9 +47,9 @@ abstract class View {
   void postRender() {    
   }
   
-  void destroy() {
+  void destroy(String templateContainerId) {
     for (var childView in childViews) {
-      childView.destroy();
+      childView.destroy("#" + templateContainerId);
     }
     this.childViews = null;
     
@@ -54,10 +61,14 @@ abstract class View {
     this.templateRootPath = null;
     this.templatePath = null;
     this.templateName = null;
-    querySelector('#templateContainer').innerHtml = "";
-  }
-  
-  void openChildView({String type, String data}) {  
+    this.viewStream = null;
+
+    DivElement templateContainer = querySelector("#" + templateContainerId);
+    if(templateContainer == null){
+      logger.fine("Template Container not found: " + templateContainerId);
+      return;
+    }
+    templateContainer.innerHtml = "";
   }
 }
 
@@ -73,7 +84,7 @@ class TemplateRenderer {
   Logger _logger = new Logger("TemplateRenderer");
   Future _request;
   
-  String _output; 
+  String _output;
   String get output => _output;
   
   String _templatePath; 
@@ -97,7 +108,7 @@ class TemplateRenderer {
     return HttpRequest.getString(_templatePath);
   }
   
-  void _bindModel(String template) {    
+  void _bindModel(String template) {
     try {
       mustache.Template parsedTemplate = mustache.parse(template);
       this._output = parsedTemplate.renderString(this._model, htmlEscapeValues: false);

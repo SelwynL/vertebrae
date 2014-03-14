@@ -37,10 +37,10 @@ abstract class Orchestrator {
    * Invokes the [_currentController]'s [BaseController.destroy] method. Then dereferences the
    * [_currentController].
    */
-  void reapView() {
+  void reapView(String templateContainerId) {
     if (currentController != null) {
       ///Reap current view, destroy controller.
-      currentController.destroy();
+      currentController.destroy(templateContainerId);
 
       ///Remove [_currentController].
       currentController = null;
