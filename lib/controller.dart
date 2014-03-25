@@ -1,8 +1,9 @@
 library controller;
 
 import 'dart:async';
-import 'package:logging/logging.dart';
+import 'model.dart';
 import 'view.dart';
+import 'package:logging/logging.dart';
 
 abstract class Controller {
   View view;
@@ -10,15 +11,13 @@ abstract class Controller {
   StreamController modelStream;
   Stream get onModelLoaded => modelStream.stream;
   Logger logger;
-  Map _model;
-  get model => _model;
-  set model(Map value) => _model = value;
+  Model model;
   Map properties;
-  
+
   Controller() {
     modelStream = new StreamController.broadcast();
   }
-  
+
   void init({Map properties, var socket});
   void loadView();
   void destroy(String templateContainerId);
